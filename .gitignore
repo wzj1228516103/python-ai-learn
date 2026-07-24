@@ -1,0 +1,6 @@
+.env
+.venv/
+.gradio/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
