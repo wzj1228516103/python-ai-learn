@@ -3,4 +3,5 @@ numpy==2.5.1
 notebook==7.6.1
 openai==2.47.0
 opencv-python==5.0.0.93
+pandas==3.0.5
 python-dotenv==1.2.2
