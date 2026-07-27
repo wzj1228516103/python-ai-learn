@@ -2,6 +2,55 @@
 
 一个面向深圳光胜人工智能科技有限公司及旗下 Beambox 品牌的工具调用 Agent。模型优先检索本地知识库并读取相关文档；当本地资料不足或问题强调时效性时，再检索公开网页，最终生成带来源链接的企业与品牌资料回答。核心工具调用循环基于 OpenAI 兼容接口实现，适用于通义千问 DashScope。
 
+## 功能概览
+
+- 本地知识库优先：使用 SQLite 保存正文、来源类型、主题、抓取时间和内容哈希。
+- 官网定向采集：读取 `beambox.com.cn` 的产品、品牌、使用指南和真实更新页面。
+- 联网补充：本地资料不足或问题涉及最新动态时，通过百度搜索并读取公开网页正文。
+- 证据分级：区分品牌官网、媒体报道、企业信息平台、招聘平台、全文和搜索摘要。
+- 来源约束：回答只能引用工具实际返回的 URL，拒绝模型自行拼接链接。
+- 双界面：提供命令行对话和 Gradio 网页聊天，均支持工具调用；Gradio 使用真实流式输出。
+
+仓库当前随附的知识库快照（2026-07-27）：
+
+| 指标 | 数量 |
+| --- | ---: |
+| 文档总数 | 36 |
+| 已读取全文 | 29 |
+| 搜索摘要线索 | 7 |
+| Beambox 官网全文 | 17 |
+| 知识主题 | 9 |
+
+> 本项目中的企业、产品、融资和市场信息来自公开资料，不构成投资、采购或法律建议。品牌官网属于企业自述，重要主张应与独立来源交叉验证。
+
+## 快速开始
+
+```powershell
+git clone https://github.com/wzj1228516103/python-ai-learn.git
+cd "python-ai-learn\beambox-agent"
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e .
+Copy-Item .env.example .env
+```
+
+编辑 `.env`：
+
+```dotenv
+OPENAI_API_KEY=你的_DashScope_API_Key
+OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+MODEL_NAME=qwen-plus
+```
+
+启动 Gradio：
+
+```powershell
+beambox-agent-web --port 7860 --inbrowser
+```
+
+浏览器访问 [http://127.0.0.1:7860](http://127.0.0.1:7860)。首次使用前可以运行 `beambox-kb stats` 检查随仓库提供的知识库。
+
 ## 项目结构
 
 ```text
@@ -65,7 +114,7 @@ beambox-agent/
 | `gradio` | 创建网页聊天界面、请求队列、示例问题和流式输出 |
 | `python-dotenv` | 从 `.env` 加载密钥，不把凭据硬编码进 Python 文件 |
 | `PyYAML` | 把 `agents.yaml` 和 `tasks.yaml` 转换为提示词字典 |
-| `setuptools` | 安装 `src` 布局项目并生成 `beambox-agent`、`beambox-agent-web` 命令 |
+| `setuptools` | 安装 `src` 布局项目并生成 `beambox-agent`、`beambox-agent-web`、`beambox-kb` 命令 |
 | Python `json` | 在模型工具调用与 Python 方法之间传递结构化参数和结果 |
 | Python `ipaddress` | 识别本机、私网和保留 IP，避免网页工具访问内部地址 |
 | Python `logging` | 记录工具调用与参数，并通过轮转限制日志占用空间 |
@@ -74,9 +123,13 @@ beambox-agent/
 
 ```mermaid
 flowchart LR
+    C["知识库维护命令"] --> KB["SQLite + Markdown"]
+    W["官网精选页面"] --> C
+    X["公开搜索结果"] --> C
     U["用户问题"] --> UI["CLI 或 Gradio"]
     UI --> A["BeamboxAgent"]
     A --> K["search_beambox_knowledge_base"]
+    KB --> K
     K --> D["get_knowledge_document"]
     D --> A
     A -->|"本地不足或需要最新资料"| S["search_beambox_company_info"]
@@ -147,6 +200,8 @@ beambox-kb build
 beambox-kb crawl-official
 ```
 
+该命令只发起网页请求，不调用大模型，也不消耗模型额度。
+
 官网站点地图包含数千篇高度相似的模板化文章。该命令只采集默认英文规范 URL
 中的核心页面，跳过多语言镜像、法律/账户页面和批量 SEO 内容，避免稀释知识质量。
 
@@ -170,26 +225,6 @@ beambox-kb search "融资和资金用途"
 - `full_text`：已成功读取公开网页正文，可作为主要证据。
 - `search_snippet`：只保存搜索结果摘要，用来发现线索，回答时应降低权重并尽量补读原文。
 - `品牌官网（企业自述）`：第一方资料，适合确认产品功能和品牌定位；营销性、获奖和市场地位主张仍需第三方来源交叉验证。
-
-## 安装
-
-```powershell
-cd "D:\AI agent\beambox-agent"
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -e .
-Copy-Item .env.example .env
-```
-
-编辑 `.env`：
-
-```dotenv
-OPENAI_API_KEY=你的_DashScope_API_Key
-OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-MODEL_NAME=qwen-plus
-```
-
-也可以把 `OPENAI_BASE_URL` 和 `MODEL_NAME` 换成其他支持 Chat Completions 与 function calling 的 OpenAI 兼容服务。
 
 ## 运行
 
@@ -228,6 +263,39 @@ beambox-agent-web --port 7861
 网页回答使用真实的模型流式接口：资料工具调用完成后，Qwen 返回的增量内容会持续更新到聊天气泡中。
 
 `--verbose` 只在终端显示工具名和参数，不打印 API Key。运行日志写入当前目录的 `logs/execution.log`。
+
+## 常见问题
+
+### 直接运行 Python 文件时报相对导入错误
+
+推荐使用安装后的命令或模块方式：
+
+```powershell
+beambox-agent-web --port 7860
+python -m beambox_agent.web --port 7860
+```
+
+不要优先使用 `python src/beambox_agent/web.py`。虽然项目保留了直接运行兼容逻辑，但模块方式更符合 `src` 布局的包加载规则。
+
+### 7860 端口已被占用
+
+指定其他端口即可：
+
+```powershell
+beambox-agent-web --port 7861
+```
+
+### 提示没有 API Key
+
+确认当前目录或其父目录存在 `.env`，并且设置了 `OPENAI_API_KEY` 或 `DASHSCOPE_API_KEY`。不要把真实 `.env` 提交到 Git。
+
+### 只想查询知识库，不调用模型
+
+直接使用：
+
+```powershell
+beambox-kb search "Nikko 的屏幕、二维码和佩戴方式"
+```
 
 ## 测试
 
