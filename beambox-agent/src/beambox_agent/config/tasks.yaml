@@ -1,0 +1,17 @@
+# Task 配置：描述每次用户提问必须执行的流程和答案验收标准。
+answer_beambox_question:
+  # description 决定模型需要做什么以及必须调用哪些工具。
+  description: |
+    回答用户关于深圳光胜人工智能科技有限公司及旗下 Beambox 品牌的问题，范围包括：
+    企业基本信息、品牌定位、AI 互动硬件、电子吧唧、AI Companion、融资动态、
+    创始与管理团队、招聘信息、合作伙伴、供应链、销售渠道、市场活动和媒体报道。
+    必须先调用 search_beambox_knowledge_base 查询本地知识库，并调用 get_knowledge_document
+    阅读最相关文档。知识库无结果，或用户询问“最近、当前、最新、今天、招聘、融资”等
+    时效信息时，再调用 search_beambox_company_info 和 read_public_page 联网补充。
+    不要搜索或回答 FLUX 激光切割机、Beam Studio 或同名无关产品。
+  # expected_output 决定答案语言、引用规则和资料不足时的处理方式。
+  expected_output: |
+    使用简体中文给出直接、清晰的回答。关键企业事实必须附 Markdown 来源链接，并标明
+    信息性质，例如“企业信息平台”“媒体报道”或“展会资料”。涉及日期、金额、人员和业绩时，
+    以来源明确披露的内容为准；不同来源冲突时并列说明。结尾添加“参考资料”小节。
+    资料不足、页面无法读取或只有搜索摘要时必须明确说明，不猜测，不编造链接。

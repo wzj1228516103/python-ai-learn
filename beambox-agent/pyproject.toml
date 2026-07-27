@@ -1,0 +1,40 @@
+# 构建系统：setuptools 负责把 src 下的 Python 包安装到虚拟环境。
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+# 项目元数据与运行依赖。
+[project]
+name = "beambox-agent"
+version = "0.1.0"
+description = "A tool-calling AI agent and local knowledge base for Shenzhen Guangsheng's Beambox brand"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # 解析搜索结果和网页正文。
+    "beautifulsoup4>=4.12,<5",
+    # 提供网页聊天界面、队列和流式展示。
+    "gradio>=6.0,<7",
+    # 调用 DashScope 或其他 OpenAI 兼容大模型接口。
+    "openai>=1.55,<3",
+    # 从 .env 安全加载 API Key 和运行参数。
+    "python-dotenv>=1.0,<2",
+    # 读取 Agent 与 Task 的 YAML 配置。
+    "PyYAML>=6.0,<7",
+    # 执行百度搜索及公开网页 HTTP 请求。
+    "requests>=2.32,<3",
+]
+
+# 安装后生成 Agent、Gradio 和知识库维护三个命令行入口。
+[project.scripts]
+beambox-agent = "beambox_agent.main:main"
+beambox-agent-web = "beambox_agent.web:main"
+beambox-kb = "beambox_agent.knowledge_base:main"
+
+# 使用 src-layout，避免项目根目录文件被误识别成 Python 包。
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# 确保 YAML 配置随 Python 包一起安装。
+[tool.setuptools.package-data]
+beambox_agent = ["config/*.yaml"]

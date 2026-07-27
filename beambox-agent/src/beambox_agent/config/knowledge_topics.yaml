@@ -1,0 +1,57 @@
+# 知识库采集主题。每个主题会独立搜索，便于后续按领域检索和更新。
+topics:
+  - id: company_profile
+    name: 企业基本信息
+    query: "企业基本信息 工商 成立时间 注册资本 地址 法定代表人"
+    max_results: 3
+    seed_urls:
+      - "https://news.tianyancha.com/ll_4v5b0ahzhk.html"
+  - id: brand_positioning
+    name: 品牌定位
+    query: "品牌定位 AI 潮玩 消费科技 Z世代"
+    max_results: 3
+    seed_urls:
+      - "https://culture.ynet.com/2026/01/19/3978896t467.html"
+  - id: products_badge
+    name: 电子吧唧与可穿戴产品
+    query: "电子吧唧 动态电子徽章 可穿戴显示 产品发布"
+    max_results: 4
+    seed_urls:
+      - "https://culture.ynet.com/2026/01/19/3978896t467.html"
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
+  - id: products_companion
+    name: AI Companion 与陪伴硬件
+    query: "AI Companion AI萌宠 情感陪伴 互动硬件"
+    max_results: 3
+    seed_urls:
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
+  - id: financing
+    name: 融资动态
+    query: "Beambox 获同创伟业投资 融资 资金用途"
+    max_results: 4
+    seed_urls:
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
+  - id: founder_team
+    name: 创始人与团队
+    query: "创始人 王静静 团队 连续创业者"
+    max_results: 3
+    seed_urls:
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
+  - id: market_channels
+    name: 市场与渠道
+    query: "市场 销售渠道 出海 日本 东南亚 北美 全球"
+    max_results: 3
+    seed_urls:
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
+      - "https://www.163.com/tech/article/KJCSC5BE00099BK0.html"
+  - id: recruitment
+    name: 招聘信息
+    query: "招聘 岗位 BOSS直聘 团队"
+    max_results: 3
+  - id: milestones
+    name: 品牌动态与里程碑
+    query: "品牌动态 产品发布 展会 合作 里程碑"
+    max_results: 3
+    seed_urls:
+      - "https://culture.ynet.com/2026/01/19/3978896t467.html"
+      - "https://stock.10jqka.com.cn/20260706/c677969020.shtml"
