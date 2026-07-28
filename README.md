@@ -2,6 +2,55 @@
 
 一组面向 Python AI 应用开发的入门示例，包含图像铅笔画转换、基于通义千问兼容接口的命令行问答，以及 Gradio 网页聊天界面。
 
+## 项目总览
+
+仓库包含两个独立的 Python 项目。根目录适合学习图像处理、提示词和 Gradio；`beambox-agent` 是一个可运行的企业资料研究 Agent，拥有自己的依赖、配置、知识库与测试。两个项目应分别创建虚拟环境和安装依赖。
+
+| 项目 | 位置 | 适用场景 | 启动入口 |
+| --- | --- | --- | --- |
+| Python AI Learn 示例 | 仓库根目录 | 学习 Gradio、OpenCV、OpenAI 兼容接口 | `python test.py`、`python prompt.py`、`python call_qwen.py` |
+| Beambox 企业资料 Agent | `beambox-agent/` | 查询本地知识库，必要时检索公开网页，并生成带来源的回答 | `beambox-agent`、`beambox-agent-web`、`beambox-kb` |
+
+### Beambox 企业资料 Agent
+
+该 Agent 面向深圳光胜人工智能科技有限公司及旗下 Beambox 品牌。它会优先检索随仓库提供的 SQLite 知识库；只有资料不足或问题要求最新信息时，才会搜索公开网页。回答中的链接必须来自实际工具结果，避免模型凭空编造来源。
+
+进入子项目并单独安装：
+
+```powershell
+cd beambox-agent
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e .
+Copy-Item .env.example .env
+```
+
+在 `beambox-agent/.env` 中配置 DashScope 兼容接口：
+
+```dotenv
+OPENAI_API_KEY=your_dashscope_api_key
+OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+MODEL_NAME=qwen-plus
+```
+
+常用命令：
+
+```powershell
+# 交互式终端问答
+beambox-agent --verbose
+
+# 启动 Gradio 网页界面
+beambox-agent-web --port 7860 --inbrowser
+
+# 查看随仓库提供的知识库覆盖情况
+beambox-kb stats
+
+# 运行 Agent 测试，不消耗模型额度
+python -m unittest discover -s tests -v
+```
+
+完整的知识库维护、工具调用、来源约束和安全说明请见 [beambox-agent/README.md](beambox-agent/README.md)。
+
 ## 功能
 
 | 示例 | 文件 | 说明 |
