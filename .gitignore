@@ -1,6 +1,10 @@
+# Local credentials and virtual environments.
 .env
 .venv/
-.gradio/
 __pycache__/
 *.py[cod]
-.ipynb_checkpoints/
+
+# Local editor metadata and runtime output.
+.idea/
+logs/
+.gradio/
