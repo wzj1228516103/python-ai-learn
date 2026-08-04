@@ -10,3 +10,7 @@ logs/
 .gradio/
 conversation_memory.json
 tmp/
+faiss_index/
+knowledge_index/
+knowledge_docs/
+query_log.json

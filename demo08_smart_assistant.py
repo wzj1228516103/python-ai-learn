@@ -67,21 +67,21 @@ class SmartAssistant:
         print("输入quit退出,输入reset重置对话。")
         print("请输入你的问题：")
 
-        # 示例演示
-        print("【示例演示】")
-        demos = [
-            "今天天气如何？",
-            "计算1+1",
-            "搜索手机",
-            "将100元转换成欧元",
-            "现在几点",
-            "重置",
-        ]
+        # # 示例演示
+        # print("【示例演示】")
+        # demos = [
+        #     "今天天气如何？",
+        #     "计算1+1",
+        #     "搜索手机",
+        #     "将100元转换成欧元",
+        #     "现在几点",
+        #     "重置",
+        # ]
 
-        for demo in demos:
-            print(f"【输入】{demo}")
-            print(f"【输出】{assistant.chat(demo)}")
-            print("-"*80)
+        # for demo in demos:
+        #     print(f"【输入】{demo}")
+        #     print(f"【输出】{assistant.chat(demo)}")
+        #     print("-"*80)
 
         # 交互模式
         print("【交互模式】")
