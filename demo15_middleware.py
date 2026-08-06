@@ -9,7 +9,7 @@ from typing import Any, Callable
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain.agents.middleware import ModelRequest, ModelResponse, before_model, after_model, AgentState, dynamic_prompt, wrap_model_call
+from langchain.agents.middleware import AgentMiddleware, ModelRequest, ModelResponse, ToolCallRequest, before_model, after_model, AgentState, dynamic_prompt, wrap_model_call
 from langchain.chat_models import init_chat_model
 from langchain.messages import AIMessage, SystemMessage
 from langgraph.runtime import Runtime
@@ -232,3 +232,69 @@ result = agent.invoke(
 # 测试user_role_prompt
 if __name__ == "__main__":
     print(user_role_prompt(None))
+
+"""
+    创建（类式）自定义Middleware
+"""
+
+class CustomMiddleware(AgentMiddleware):
+    """自定义中间件基础模板"""
+
+    def __init__(self, config: dict = None):
+        """初始化配置"""
+        self.config = config or {}
+
+    def before_agent(
+            self,
+            state: AgentState,
+            runtime: Runtime,
+    ) -> dict[str, Any] | None:
+        """Agent 开始前执行"""
+        return None
+
+    def before_model(
+            self,
+            state: AgentState,
+            runtime: Runtime,
+    ) -> dict[str, Any] | None:
+        """模型调用前执行"""
+        return None
+
+    def modify_model_request(
+            self,
+            request: ModelRequest,
+    ) -> ModelRequest:
+        """修改模型请求"""
+        return request
+
+    def wrap_model_call(
+            self,
+            request: ModelRequest,
+            handler: Callable[[ModelRequest], ModelResponse]
+    ) -> ModelResponse:
+        """包裹模型调用"""
+        return handler(request)
+
+    def after_model(
+            self,
+            state: AgentState,
+            runtime: Runtime,
+    ) -> dict[str, Any] | None:
+        """模型响应后执行"""
+        return None
+
+    def wrap_tool_call(
+            self,
+            request: ToolCallRequest,
+            handler: Callable[[ToolCallRequest], ToolCallRequest]
+    ) -> ToolCallRequest:
+        """包裹工具调用"""
+        return handler(request)
+
+    def after_tool(
+            self,
+            state: AgentState,
+            runtime: Runtime,
+    ) -> dict[str, Any] | None:
+        """Agent 结束后执行"""
+        return None

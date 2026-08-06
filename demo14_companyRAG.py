@@ -336,7 +336,7 @@ def main():
 
     for question in test_questions:
         print(f"\n问题：{question}")
-        result = kb.query(question)
+        result = kb.query(question)  
 
         print(f"{result['question']} -> {result['answer']}")
         print(

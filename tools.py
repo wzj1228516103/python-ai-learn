@@ -65,8 +65,7 @@ def get_current_time(timezone: str = "Asia/Shanghai") -> str:
     """
 
     now = datetime.now()
-    # datetime.now() 已经返回 datetime 对象，不能再写成 now() 调用。
-    return now.strftime("%Y年%m月%d日 %H:%M:%S")
+    return now().strftime("%Y年%m月%d日 %H:%M:%S")
 
 @tool
 def search_product(keyword: str) -> str:
@@ -157,3 +156,4 @@ def calculator(expression: str) -> str:
         return str(result)
     except Exception as e:
         return f"计算错误：{e}"
+
