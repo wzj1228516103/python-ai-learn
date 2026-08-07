@@ -14,3 +14,4 @@ faiss_index/
 knowledge_index/
 knowledge_docs/
 query_log.json
+*_workflow.png
